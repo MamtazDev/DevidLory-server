@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const User = require("../user/user.model");
 
 const bookmarkSchema = new mongoose.Schema(
   {
@@ -9,6 +10,10 @@ const bookmarkSchema = new mongoose.Schema(
     content: {
       type: String,
       required: true,
+    },
+    user: {
+      ref: User,
+      type: mongoose.Schema.Types.ObjectId,
     },
   },
   { timestamps: true }
