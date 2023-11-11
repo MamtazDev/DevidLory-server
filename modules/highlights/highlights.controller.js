@@ -76,7 +76,7 @@ const getHighlightsByUser = async (req, res) => {
 
     const userHighlights = await Highlights.find({ user: userId });
 
-    res.status(200).send(userBookmarks);
+    res.status(200).send(userHighlights);
   } catch (error) {
     res.status(500).send({
       message: error.message,
