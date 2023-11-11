@@ -1,7 +1,7 @@
 const express = require("express");
 const {
   registerUser,
-  emailVirification,
+
   loginUser,
   getAllUsers,
   deleteUser,
@@ -19,6 +19,5 @@ router.delete("/delete/:id", deleteUser);
 router.put("/upload/:id", uploadDocuments);
 router.put("/edit/:id", editUser);
 router.get("/:id", getUser);
-router.get("/verify/:email", emailVirification);
 
 module.exports = router;

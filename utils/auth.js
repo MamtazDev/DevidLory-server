@@ -6,8 +6,7 @@ const generateToken = async (user) => {
   return jwt.sign(
     {
       role: user.role,
-      firstName: user.firstName,
-      lastName: user.lastName,
+      userName: user?.userName,
       email: user.email,
     },
     process.env.ACCESS_TOKEN_SECRET,
