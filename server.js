@@ -4,6 +4,7 @@ const connectDB = require("./config/db");
 const PORT = process.env.PORT || 8000;
 
 const usersRoutes = require("./modules/user/user.route");
+const bookmarksRoutes = require("./modules/bookmarks/bookmarks.route");
 
 const app = express();
 app.use(cors());
@@ -12,6 +13,7 @@ app.use(express.json());
 connectDB();
 
 app.use("/api/users", usersRoutes);
+app.use("/api/bookmarks", bookmarksRoutes);
 
 app.get("/", (req, res) => {
   res.send("Server is runnig");
