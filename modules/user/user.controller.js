@@ -109,7 +109,7 @@ const deleteUser = async (req, res) => {
       .exec()
       .then((result) => {
         res.status(200).send({
-          message: `${result.name} is successfully removed!`,
+          message: `${result.userName} is successfully removed!`,
           status: 200,
         });
       })

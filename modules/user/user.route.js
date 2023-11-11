@@ -7,7 +7,6 @@ const {
   deleteUser,
   getUser,
   editUser,
-  uploadDocuments,
   changeUserEmail,
   changeUserPassword,
 } = require("./user.controller");
