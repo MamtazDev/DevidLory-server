@@ -21,4 +21,29 @@ router.put("/edit/:id", editUser);
 router.get("/:id", getUser);
 router.get("/verify/:email", emailVirification);
 
+
+/**
+ * @swagger
+ * /api/users:
+ *    get:
+ *      description: get all users
+ *      responses:
+ *        200:
+ *          description: success
+ * 
+ */
+
+/**
+ * @swagger
+ * /api/users:
+ *    post:
+ *      description: get all users
+ *      responses:
+ *        200:
+ *          description: success
+ * 
+ */
+
+
+
 module.exports = router;
