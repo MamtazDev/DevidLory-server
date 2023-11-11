@@ -136,35 +136,58 @@ const getUser = async (req, res) => {
   }
 };
 
-const uploadDocuments = async (req, res) => {
-  console.log("upload docs");
-
+const changeUserEmail = async (req, res) => {
   try {
-    const user = User.findById(req.params.id);
-    if (user) {
-      // user.url = req.body.url;
-      // user.parentSearch = req.body.parentSearch;
-      // console.log("user", req.body);
-      // await user.save();
+    const isExist = await User.findOne({ _id: req.params.id });
 
+    if (isExist) {
       const result = await User.updateOne(
         { _id: req.params.id },
         {
           $set: {
-            url: req.body.url,
-            parentSearch: req.body.parentSearch,
+            email: req.body.email,
           },
         }
       );
 
       res.status(200).send({
-        message: "Documents uploaded successfully!",
+        message: "User Email updated successfully!",
         status: 200,
       });
     } else {
-      res.status(401).send({
-        message: "There is no such user",
-        status: 400,
+      res.status(400).send({
+        message: "User not exist!",
+      });
+    }
+  } catch (error) {
+    res.status(500).send({
+      message: error.message,
+    });
+  }
+};
+
+const changeUserPassword = async (req, res) => {
+  try {
+    const isExist = await User.findOne({ _id: req.params.id });
+
+    if (isExist) {
+      const newPassword = bcrcypt.hashSync(req.body.password);
+      const result = await User.updateOne(
+        { _id: req.params.id },
+        {
+          $set: {
+            password: newPassword,
+          },
+        }
+      );
+
+      res.status(200).send({
+        message: "User Password updated successfully!",
+        status: 200,
+      });
+    } else {
+      res.status(400).send({
+        message: "User not exist!",
       });
     }
   } catch (error) {
@@ -181,5 +204,6 @@ module.exports = {
   deleteUser,
   getUser,
   editUser,
-  uploadDocuments,
+  changeUserEmail,
+  changeUserPassword,
 };
