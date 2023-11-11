@@ -59,8 +59,39 @@ const deleteSingleBookmarks = async (req, res) => {
   }
 };
 
+const getAllBookmarks = async (req, res) => {
+  try {
+    const allBookmarks = await Bookmarks.find({});
+    res.status(200).send(allBookmarks);
+  } catch (error) {
+    res.status(500).send({
+      message: error.message,
+    });
+  }
+};
+
+const getBookmarksByUser = async (req, res) => {
+  try {
+    const { userId } = req.body;
+
+    if (!userId) {
+      res.send("please enter ser");
+    }
+
+    const userBookmarks = await Bookmarks.find({ user: userId });
+
+    res.status(200).send(userBookmarks);
+  } catch (error) {
+    res.status(500).send({
+      message: error.message,
+    });
+  }
+};
+
 module.exports = {
   createBookmarks,
   getSingleBookmarks,
-  deleteSingleBookmarks
+  deleteSingleBookmarks,
+  getAllBookmarks,
+  getBookmarksByUser,
 };

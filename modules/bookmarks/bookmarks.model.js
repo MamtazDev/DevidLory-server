@@ -14,6 +14,7 @@ const bookmarkSchema = new mongoose.Schema(
     user: {
       ref: User,
       type: mongoose.Schema.Types.ObjectId,
+      required: true,
     },
   },
   { timestamps: true }
