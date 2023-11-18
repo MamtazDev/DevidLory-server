@@ -1,6 +1,11 @@
 const User = require("./user.model");
 const bcrcypt = require("bcryptjs");
-const { generateToken, sendVerificationEmail } = require("../../utils/auth");
+const randomstring = require("randomstring");
+const {
+  generateToken,
+  sendVerificationEmail,
+  sendVerificationCode,
+} = require("../../utils/auth");
 
 const registerUser = async (req, res) => {
   try {
@@ -168,12 +173,12 @@ const changeUserEmail = async (req, res) => {
 
 const changeUserPassword = async (req, res) => {
   try {
-    const isExist = await User.findOne({ _id: req.params.id });
+    const isExist = await User.findOne({ email: req.params.email });
 
     if (isExist) {
       const newPassword = bcrcypt.hashSync(req.body.password);
       const result = await User.updateOne(
-        { _id: req.params.id },
+        { email: req.params.email },
         {
           $set: {
             password: newPassword,
@@ -197,6 +202,31 @@ const changeUserPassword = async (req, res) => {
   }
 };
 
+const sendOTPToEmail = async (req, res) => {
+  try {
+    const isExist = await User.findOne({ email: req.params.email });
+
+    if (!isExist) {
+      const otp = randomstring.generate({ length: 6, charset: "numeric" });
+      await sendVerificationCode(req.params.email, otp);
+
+      res.status(200).send({
+        message: "OTP Send to email successfully. Please Check your email!",
+        OTP: otp,
+        status: 200,
+      });
+    } else {
+      res.status(400).send({
+        message: "User not exist!",
+      });
+    }
+  } catch (error) {
+    res.status(500).send({
+      message: error.message,
+    });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
@@ -206,4 +236,5 @@ module.exports = {
   editUser,
   changeUserEmail,
   changeUserPassword,
+  sendOTPToEmail,
 };

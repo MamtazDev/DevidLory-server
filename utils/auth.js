@@ -44,7 +44,37 @@ const sendVerificationEmail = async (user) => {
   });
 };
 
+const sendVerificationCode = async (email, otp) => {
+  const transporter = nodemailer.createTransport({
+    service: "Gmail",
+    auth: {
+      user: process.env.NODEMAILER_GMAIL_USER,
+      pass: process.env.NODEMAILER_GMAIL_PASSWORD,
+    },
+  });
+
+  const mailOptions = {
+    from: process.env.GMAIL_USER,
+    to: email,
+    subject: "OTP Code",
+    html: `<p>Your OTP for email verification is: ${otp}</p>`,
+  };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.log(error);
+    } else {
+      return true;
+    }
+  });
+
+  // if (emailSent === true) {
+  //   return true;
+  // }
+};
+
 module.exports = {
   generateToken,
   sendVerificationEmail,
+  sendVerificationCode,
 };
