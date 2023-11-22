@@ -9,6 +9,7 @@ const highlightsRoutes = require("./modules/highlights/highlights.route");
 const notesRoutes = require("./modules/notes/notes.route");
 const conversationRoutes = require("./modules/conversation/conversation.route");
 const messagesRoutes = require("./modules/messages/message.route");
+const notificationRoutes = require("./modules/notifications/notifications.route");
 
 const app = express();
 app.use(cors());
@@ -22,6 +23,7 @@ app.use("/api/highlights", highlightsRoutes);
 app.use("/api/notes", notesRoutes);
 app.use("/api/conversations", conversationRoutes);
 app.use("/api/messages", messagesRoutes);
+app.use("/api/notifications", notificationRoutes);
 
 app.get("/", (req, res) => {
   res.send("Server is runnig");

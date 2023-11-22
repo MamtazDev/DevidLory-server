@@ -2,9 +2,14 @@ const Conversation = require("./conversation.model");
 
 const addConversationBySenderReciver = async (req, res) => {
   try {
-    const { senderId, reciverId } = req.body;
+    // const { senderId, reciverId } = req.body;
+    // const newConversation = new Conversation({
+    //   members: [senderId, reciverId],
+    // });
+
+    const { senderId } = req.body;
     const newConversation = new Conversation({
-      members: [senderId, reciverId],
+      members: [senderId, "655c34b3c851135cf47e71b7"],
     });
 
     const saveConversation = await newConversation.save();
@@ -28,9 +33,9 @@ const getConversationByUser = async (req, res) => {
 
 const getConversationOfTwoUsers = async (req, res) => {
   try {
-    const { firstUserId, secondUserId } = req.params;
+    const { firstUserId } = req.params;
     const conversation = await Conversation.findOne({
-      members: { $all: [firstUserId, secondUserId] },
+      members: { $all: [firstUserId, "655c34b3c851135cf47e71b7"] },
     });
     res.status(200).send(conversation);
   } catch (error) {

@@ -211,8 +211,8 @@ const sendOTPToEmail = async (req, res) => {
   try {
     const isExist = await User.findOne({ email: req.params.email });
 
-    if (!isExist) {
-      const otp = randomstring.generate({ length: 6, charset: "numeric" });
+    if (isExist) {
+      const otp = randomstring.generate({ length: 4, charset: "numeric" });
       await sendVerificationCode(req.params.email, otp);
 
       res.status(200).send({
