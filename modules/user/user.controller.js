@@ -39,15 +39,20 @@ const registerUser = async (req, res) => {
 };
 
 const loginUser = async (req, res) => {
+  const { email, password } = req.body;
   try {
-    const user = await User.findOne({ email: req.body.email });
+    const user = await User.findOne({ email: email });
 
-    if (user && bcrcypt.compareSync(req.body.password, user.password)) {
+    if (user && bcrcypt.compareSync(password, user?.password)) {
       const accessTOken = await generateToken(user);
+
+      const userWithoutPassword = { ...user.toObject() };
+      delete userWithoutPassword.password;
+
       return res.send({
         message: "Logged in successfully",
         status: 200,
-        user,
+        user: userWithoutPassword,
         accessTOken,
       });
     } else {
@@ -64,13 +69,13 @@ const loginUser = async (req, res) => {
 };
 
 const editUser = async (req, res) => {
-  const { image, userName, phoneNumber, country } = req.body;
+  const { image, fullName, phoneNumber, country } = req.body;
   try {
     const user = await User.findById(req.params.id);
 
     if (user) {
-      user.image = image;
-      user.userName = userName;
+      // user.image = image;
+      user.fullName = fullName;
       user.phoneNumber = phoneNumber;
       user.country = country;
 
