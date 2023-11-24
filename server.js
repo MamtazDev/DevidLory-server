@@ -9,6 +9,11 @@ const highlightsRoutes = require("./modules/highlights/highlights.route");
 const notesRoutes = require("./modules/notes/notes.route");
 const conversationRoutes = require("./modules/conversation/conversation.route");
 const messagesRoutes = require("./modules/messages/message.route");
+const subscriptionRoutes = require("./modules/subscription/subscription.route");
+
+
+// stripe details
+
 
 const app = express();
 app.use(cors());
@@ -22,6 +27,11 @@ app.use("/api/highlights", highlightsRoutes);
 app.use("/api/notes", notesRoutes);
 app.use("/api/conversations", conversationRoutes);
 app.use("/api/messages", messagesRoutes);
+
+// subscription
+app.use("/api/subscription", subscriptionRoutes);
+
+
 
 app.get("/", (req, res) => {
   res.send("Server is runnig");

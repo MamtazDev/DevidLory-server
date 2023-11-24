@@ -4,8 +4,9 @@ const userSchema = new mongoose.Schema(
   {
     role: {
       type: String,
-      required: true,
+      required: false,
       enum: ["user", "admin"],
+      default:"user"
     },
     image: {
       type: String,
