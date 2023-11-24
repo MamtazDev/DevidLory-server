@@ -29,6 +29,7 @@ const registerUser = async (req, res) => {
         message: "User Created successfully",
         user,
         accessTOken,
+        status: 200,
       });
     }
   } catch (err) {
