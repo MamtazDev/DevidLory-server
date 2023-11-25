@@ -84,7 +84,54 @@ const getNotificationsByUser = async (req, res) => {
   }
 };
 
+const putMessageSeen = async (req, res) => {
+  try {
+    const { userId } = req.body;
+
+    const seenStatus = await Notifications.updateMany(
+      { userId: userId },
+      { $set: { isSeen: true } }
+    );
+
+    if (seenStatus?.modifiedCount > 0) {
+      res.status(200).send({
+        message: "Notification seen status updated successfully!",
+        status: 200,
+      });
+    }
+  } catch (error) {
+    res.status(500).send({
+      message: error.message,
+    });
+  }
+};
+
+// const getNotificationsByUser = async (req, res) => {
+//   try {
+//     const { userId, type } = req.body;
+
+//     const userNotifications = await Notifications.find({
+//       userId: userId,
+//     });
+
+//     if (type === "all") {
+//       res.status(200).send(userNotifications);
+//     }
+
+//     if (type === "notSeen") {
+//       const notSeenNotifications = userNotifications.filter((i) => !i.isSeen);
+
+//       res.status(200).send(notSeenNotifications);
+//     }
+//   } catch (error) {
+//     res.status(500).send({
+//       message: error.message,
+//     });
+//   }
+// };
+
 module.exports = {
   createNotifications,
   getNotificationsByUser,
+  putMessageSeen,
 };
