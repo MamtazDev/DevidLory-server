@@ -236,6 +236,32 @@ const sendOTPToEmail = async (req, res) => {
   }
 };
 
+const updateSubscriptionStatus = async (req, res) => {
+  try {
+    const isExist = await User.findOne({ _id: req.params.id });
+
+    if (isExist) {
+      const result = await User.updateOne(
+        { _id: req.params.id },
+        {
+          $set: {
+            isSubscribed: true,
+          },
+        }
+      );
+
+      res.status(200).send({
+        message: "User Password updated successfully!",
+        status: 200,
+      });
+    }
+  } catch (error) {
+    res.status(500).send({
+      message: error.message,
+    });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
@@ -246,4 +272,5 @@ module.exports = {
   changeUserEmail,
   changeUserPassword,
   sendOTPToEmail,
+  updateSubscriptionStatus,
 };
