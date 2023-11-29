@@ -75,7 +75,10 @@ const editUser = async (req, res) => {
     const user = await User.findById(req.params.id);
 
     if (user) {
-      // user.image = image;
+      if (image) {
+        user.image = image;
+      }
+
       user.fullName = fullName;
       user.phoneNumber = phoneNumber;
       user.country = country;
