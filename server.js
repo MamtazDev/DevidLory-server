@@ -42,3 +42,23 @@ app.get("/", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server is running on ${PORT}`);
 });
+
+
+
+
+
+// 1. conversation
+// 2. new update api pdf buffer add
+// 3. call buffer api
+
+// const response = await fetch(
+//   "https://your-server-endpoint.com/save-pdf",
+//   {
+//     method: "PUT",
+//     headers: {
+//       "Content-Type": "application/pdf",
+//     },
+//     // body: pdfBuffer ? pdfBuffer: pdfData ,
+//     body: pdfData ,
+//   }
+// );

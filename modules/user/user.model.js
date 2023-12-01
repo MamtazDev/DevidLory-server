@@ -43,6 +43,10 @@ const userSchema = new mongoose.Schema(
       default: false,
       required: false,
     },
+    pdfBuffer:{
+      type: Buffer,
+      required:false,
+    }
   },
   {
     timestamps: true,
@@ -52,3 +56,4 @@ const userSchema = new mongoose.Schema(
 const User = mongoose.model("User", userSchema);
 
 module.exports = User;
+
