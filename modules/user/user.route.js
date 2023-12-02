@@ -11,6 +11,7 @@ const {
   changeUserPassword,
   sendOTPToEmail,
   updateSubscriptionStatus,
+  updateUserBuffer,
 } = require("./user.controller");
 
 const router = express.Router();
@@ -23,6 +24,7 @@ router.delete("/delete/:id", deleteUser);
 router.put("/changeEmail/:id", changeUserEmail);
 router.put("/changePassword/:email", changeUserPassword);
 router.put("/subscription/:id", updateSubscriptionStatus);
+router.put("/updateBuffer/:id",updateUserBuffer)
 router.put("/edit/:id", editUser);
 router.get("/:id", getUser);
 
