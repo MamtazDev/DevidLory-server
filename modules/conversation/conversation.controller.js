@@ -1,3 +1,4 @@
+const { sendEmail } = require("../../utils/auth");
 const User = require("../user/user.model");
 const Conversation = require("./conversation.model");
 
@@ -9,8 +10,9 @@ const addConversationBySenderReciver = async (req, res) => {
     // });
 
     const { senderId } = req.body;
+    const admin = await User.findOne({ role: "admin" });
     const newConversation = new Conversation({
-      members: [senderId, "655c34b3c851135cf47e71b7"],
+      members: [senderId, admin?._id.toString()],
     });
 
     const saveConversation = await newConversation.save();
@@ -55,16 +57,55 @@ const getConversationOfTwoUsers = async (req, res) => {
     const admin = await User.findOne({ role: "admin" });
     const { firstUserId } = req.params;
     const conversation = await Conversation.findOne({
-      members: { $all: [firstUserId, `${admin?._id}`] },
+      members: { $all: [firstUserId, admin?._id.toString()] },
     });
-    res.status(200).send(conversation);
+
+   
+    if(conversation?._id)
+    {
+      res.status(200).send(conversation);
+    }
+    else{
+      res.status(200).send({
+        message: "No conversation"
+      })
+    }
   } catch (error) {
     res.status(500).send(error);
   }
 };
 
+const sendMailToAuthor = async(req,res)=>{
+  try {
+    const {email, contactInfo,message }=req.body;
+
+    const data = {
+      email,
+      name: contactInfo?.name,
+      phoneNumber: contactInfo?.phoneNumber,
+      country: contactInfo?.country,
+      message
+    }
+    
+    const sendMail = await sendEmail(data)
+
+    if(sendEmail){
+      console.log("mail sent")
+    }
+
+    res.status(200).send({
+      message: "Send mail to author successfully!",
+      status:200
+    })
+    
+  } catch (error) {
+    res.status(500).send(error);
+  }
+}
+
 module.exports = {
   addConversationBySenderReciver,
   getConversationByUser,
   getConversationOfTwoUsers,
+  sendMailToAuthor
 };

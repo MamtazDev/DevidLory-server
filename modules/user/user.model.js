@@ -44,7 +44,7 @@ const userSchema = new mongoose.Schema(
       required: false,
     },
     pdfBuffer:{
-      type: Buffer,
+      type: Object,
       required:false,
     }
   },

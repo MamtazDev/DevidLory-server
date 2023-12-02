@@ -1,6 +1,7 @@
 const User = require("./user.model");
 const bcrcypt = require("bcryptjs");
 const randomstring = require("randomstring");
+
 const {
   generateToken,
   sendVerificationEmail,
@@ -255,12 +256,55 @@ const updateSubscriptionStatus = async (req, res) => {
         status: 200,
       });
     }
+    else {
+      res.status(400).send({
+        message: "User not exist!",
+      });
+    }
   } catch (error) {
     res.status(500).send({
       message: error.message,
     });
   }
 };
+
+
+const updateUserBuffer = async(req,res)=>{
+  try {
+    const isExist = await User.findOne({ _id: req.params.id });
+    // const newPdfBuffer = Buffer.from(req.body.data); 
+    // console.log("NewPdfBuffer: ", newPdfBuffer)
+    console.log("NewPdfBuffer req.body.data : ", req.body)
+    console.log("NewPdfBuffer req.file.buffer : ", req.file)
+    console.log("req.params.id :", req.params.id)
+
+    if (isExist) {
+      const result = await User.updateOne(
+        { _id: req.params.id },
+        {
+          $set: {
+            pdfBuffer: req.body.data,
+          },
+        }
+      );
+
+      res.status(200).send({
+        message: "User PDF updated successfully!",
+        status: 200,
+      });
+    }
+    else {
+      res.status(400).send({
+        message: "User not exist!",
+      });
+    }
+
+  } catch (error) {
+    res.status(500).send({
+      message: error.message,
+    });
+  }
+}
 
 module.exports = {
   registerUser,
@@ -273,4 +317,5 @@ module.exports = {
   changeUserPassword,
   sendOTPToEmail,
   updateSubscriptionStatus,
+  updateUserBuffer
 };
