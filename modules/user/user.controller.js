@@ -251,7 +251,7 @@ const updateSubscriptionStatus = async (req, res) => {
       );
 
       res.status(200).send({
-        message: "User Password updated successfully!",
+        message: "Subscription successfully!",
         status: 200,
       });
     }
