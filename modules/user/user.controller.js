@@ -269,14 +269,23 @@ const updateSubscriptionStatus = async (req, res) => {
 };
 
 
+
+
 const updateUserBuffer = async(req,res)=>{
   try {
     const isExist = await User.findOne({ _id: req.params.id });
-    // const newPdfBuffer = Buffer.from(req.body.data); 
-    // console.log("NewPdfBuffer: ", newPdfBuffer)
-    console.log("NewPdfBuffer req.body.data : ", req.body)
-    console.log("NewPdfBuffer req.file.buffer : ", req.file)
-    console.log("req.params.id :", req.params.id)
+    
+
+    const pdfBuffer = req.file.buffer; // Access the uploaded file buffer
+
+    console.log("pdfBuffer", pdfBuffer)
+
+    // Here you can perform any additional processing or save the file as needed
+    
+    // Send a response back to the client
+    res.status(200).json({ message: 'File uploaded successfully' });
+
+
 
     if (isExist) {
       const result = await User.updateOne(
@@ -305,6 +314,9 @@ const updateUserBuffer = async(req,res)=>{
     });
   }
 }
+
+
+
 
 module.exports = {
   registerUser,

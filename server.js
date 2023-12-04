@@ -3,6 +3,10 @@ const cors = require("cors");
 const connectDB = require("./config/db");
 const PORT = process.env.PORT || 8000;
 
+const multer = require('multer'); 
+
+
+
 const usersRoutes = require("./modules/user/user.route");
 const bookmarksRoutes = require("./modules/bookmarks/bookmarks.route");
 const highlightsRoutes = require("./modules/highlights/highlights.route");
@@ -41,6 +45,23 @@ app.get("/", (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Server is running on ${PORT}`);
+});
+
+
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage, limits: {
+  fileSize: 5 * 1024 * 1024, // 5 MB limit
+}, });
+
+app.post('/upload', upload.single('file'), (req, res) => {
+  const pdfBuffer = req.file.buffer; // Access the uploaded file buffer
+
+  console.log("pdfBuffer", pdfBuffer)
+
+  // Here you can perform any additional processing or save the file as needed
+
+  // Send a response back to the client
+  res.status(200).json({ message: 'File uploaded successfully' });
 });
 
 
