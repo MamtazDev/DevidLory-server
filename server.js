@@ -16,6 +16,7 @@ const subscriptionRoutes = require("./modules/subscription/subscription.route");
 // stripe details
 
 const notificationRoutes = require("./modules/notifications/notifications.route");
+const User = require("./modules/user/user.model");
 
 const app = express();
 app.use(cors());
@@ -43,11 +44,44 @@ app.listen(PORT, () => {
 });
 
 const storage = multer.memoryStorage();
-const upload = multer({
-  storage: storage,
-  limits: {
-    fileSize: 5 * 1024 * 1024, // 5 MB limit
-  },
+const upload = multer({ storage: storage, limits: {
+  fileSize: 5 * 1024 * 1024, // 5 MB limit
+}, });
+
+app.put('/upload/:id', upload.single('file'), async (req, res) => {
+  const pdfBuffer = req.file.buffer; // Access the uploaded file buffer
+
+  console.log("pdfBuffer", pdfBuffer)
+  const isExist = await User.findOne({ _id: req.params.id });
+
+  console.log("isExist:", isExist)
+
+  if (isExist) {
+    const result = await User.updateOne(
+      { _id: req.params.id },
+      {
+        $set: {
+          pdfBuffer: pdfBuffer,
+        },
+      }
+    );
+
+    res.status(200).send({
+      message: "User PDF updated successfully!",
+      status: 200,
+    });
+  }
+  else {
+    res.status(400).send({
+      message: "User not exist!",
+    });
+  }
+
+
+  // Here you can perform any additional processing or save the file as needed
+
+  // Send a response back to the client
+  // res.status(200).json({ message: 'File uploaded successfully' });
 });
 
 // app.post("/upload", upload.single("file"), (req, res) => {
