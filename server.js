@@ -11,7 +11,6 @@ const conversationRoutes = require("./modules/conversation/conversation.route");
 const messagesRoutes = require("./modules/messages/message.route");
 const subscriptionRoutes = require("./modules/subscription/subscription.route");
 
-
 // stripe details
 
 const notificationRoutes = require("./modules/notifications/notifications.route");
@@ -19,6 +18,8 @@ const notificationRoutes = require("./modules/notifications/notifications.route"
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.raw());
 
 connectDB();
 
@@ -33,8 +34,6 @@ app.use("/api/notifications", notificationRoutes);
 // subscription
 app.use("/api/subscription", subscriptionRoutes);
 
-
-
 app.get("/", (req, res) => {
   res.send("Server is runnig");
 });
@@ -42,10 +41,6 @@ app.get("/", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server is running on ${PORT}`);
 });
-
-
-
-
 
 // 1. conversation
 // 2. new update api pdf buffer add
