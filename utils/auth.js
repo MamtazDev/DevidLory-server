@@ -44,7 +44,7 @@ const sendVerificationEmail = async (user) => {
   });
 };
 
-const sendEmail = async(data)=>{
+const sendEmail = async (data) => {
   const transporter = nodemailer.createTransport({
     service: "Gmail",
     auth: {
@@ -77,7 +77,7 @@ const sendEmail = async(data)=>{
       return true;
     }
   });
-}
+};
 
 const sendVerificationCode = async (email, otp) => {
   const transporter = nodemailer.createTransport({
@@ -108,9 +108,38 @@ const sendVerificationCode = async (email, otp) => {
   // }
 };
 
+const sendSubscriptionSuccssMessage = async (email) => {
+  const transporter = nodemailer.createTransport({
+    service: "Gmail",
+    auth: {
+      user: process.env.NODEMAILER_GMAIL_USER,
+      pass: process.env.NODEMAILER_GMAIL_PASSWORD,
+    },
+  });
+
+  const mailOptions = {
+    from: process.env.NODEMAILER_GMAIL_USER,
+    to: email,
+    subject: "Subscription Done!!",
+    html: `<p>Hi there,</p>
+    <p style="margin-top:10px; margin-bottom:10px">Subscription done successfully!!</p>
+    <p style="margin-bottom:10px">Thanks!</p> 
+    </div>
+    `,
+  };
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.log(error);
+    } else {
+      return true;
+    }
+  });
+};
+
 module.exports = {
   generateToken,
   sendVerificationEmail,
   sendVerificationCode,
-  sendEmail
+  sendEmail,
+  sendSubscriptionSuccssMessage,
 };

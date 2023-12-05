@@ -6,6 +6,7 @@ const {
   generateToken,
   sendVerificationEmail,
   sendVerificationCode,
+  sendSubscriptionSuccssMessage,
 } = require("../../utils/auth");
 
 const registerUser = async (req, res) => {
@@ -255,8 +256,7 @@ const updateSubscriptionStatus = async (req, res) => {
         message: "User Password updated successfully!",
         status: 200,
       });
-    }
-    else {
+    } else {
       res.status(400).send({
         message: "User not exist!",
       });
@@ -268,24 +268,18 @@ const updateSubscriptionStatus = async (req, res) => {
   }
 };
 
-
-
-
-const updateUserBuffer = async(req,res)=>{
+const updateUserBuffer = async (req, res) => {
   try {
     const isExist = await User.findOne({ _id: req.params.id });
-    
 
     const pdfBuffer = req.file.buffer; // Access the uploaded file buffer
 
-    console.log("pdfBuffer", pdfBuffer)
+    console.log("pdfBuffer", pdfBuffer);
 
     // Here you can perform any additional processing or save the file as needed
-    
+
     // Send a response back to the client
-    res.status(200).json({ message: 'File uploaded successfully' });
-
-
+    res.status(200).json({ message: "File uploaded successfully" });
 
     if (isExist) {
       const result = await User.updateOne(
@@ -301,22 +295,31 @@ const updateUserBuffer = async(req,res)=>{
         message: "User PDF updated successfully!",
         status: 200,
       });
-    }
-    else {
+    } else {
       res.status(400).send({
         message: "User not exist!",
       });
     }
-
   } catch (error) {
     res.status(500).send({
       message: error.message,
     });
   }
-}
+};
 
-
-
+const subscriptionSuccssMessage = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const message = await sendSubscriptionSuccssMessage(email);
+    res.status(200).send({
+      message: "Subscription message send successfully!",
+    });
+  } catch (error) {
+    res.status(500).send({
+      message: error.message,
+    });
+  }
+};
 
 module.exports = {
   registerUser,
@@ -329,5 +332,6 @@ module.exports = {
   changeUserPassword,
   sendOTPToEmail,
   updateSubscriptionStatus,
-  updateUserBuffer
+  updateUserBuffer,
+  subscriptionSuccssMessage,
 };

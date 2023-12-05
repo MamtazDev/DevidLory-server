@@ -3,9 +3,7 @@ const cors = require("cors");
 const connectDB = require("./config/db");
 const PORT = process.env.PORT || 8000;
 
-const multer = require('multer'); 
-
-
+const multer = require("multer");
 
 const usersRoutes = require("./modules/user/user.route");
 const bookmarksRoutes = require("./modules/bookmarks/bookmarks.route");
@@ -14,7 +12,6 @@ const notesRoutes = require("./modules/notes/notes.route");
 const conversationRoutes = require("./modules/conversation/conversation.route");
 const messagesRoutes = require("./modules/messages/message.route");
 const subscriptionRoutes = require("./modules/subscription/subscription.route");
-
 
 // stripe details
 
@@ -38,8 +35,6 @@ app.use("/api/notifications", notificationRoutes);
 // subscription
 app.use("/api/subscription", subscriptionRoutes);
 
-
-
 app.get("/", (req, res) => {
   res.send("Server is runnig");
 });
@@ -48,19 +43,23 @@ app.listen(PORT, () => {
   console.log(`Server is running on ${PORT}`);
 });
 
-
 const storage = multer.memoryStorage();
-const upload = multer({ storage: storage, limits: {
-  fileSize: 5 * 1024 * 1024, // 5 MB limit
-}, });
+const upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5 MB limit
+  },
+});
 
-app.put('/upload/:id', upload.single('file'), async (req, res) => {
+app.put("/upload/:id", upload.single("file"), async (req, res) => {
   const pdfBuffer = req.file.buffer; // Access the uploaded file buffer
 
-  console.log("pdfBuffer", pdfBuffer)
-  const isExist = await User.findOne({ _id: req.params.id });
+  console.log("pdfBuffer", pdfBuffer);
+  const isExist = await User.findOne({ _id: req.params.id }).select(
+    "-password"
+  );
 
-  console.log("isExist:", isExist)
+  console.log("isExist:", isExist);
 
   if (isExist) {
     const result = await User.updateOne(
@@ -77,13 +76,11 @@ app.put('/upload/:id', upload.single('file'), async (req, res) => {
       user: isExist,
       status: 200,
     });
-  }
-  else {
+  } else {
     res.status(400).send({
       message: "User not exist!",
     });
   }
-
 
   // Here you can perform any additional processing or save the file as needed
 
@@ -91,9 +88,16 @@ app.put('/upload/:id', upload.single('file'), async (req, res) => {
   // res.status(200).json({ message: 'File uploaded successfully' });
 });
 
+// app.post("/upload", upload.single("file"), (req, res) => {
+//   const pdfBuffer = req.file.buffer; // Access the uploaded file buffer
 
+//   console.log("pdfBuffer", pdfBuffer);
 
+//   // Here you can perform any additional processing or save the file as needed
 
+//   // Send a response back to the client
+//   res.status(200).json({ message: "File uploaded successfully" });
+// });
 
 // 1. conversation
 // 2. new update api pdf buffer add
