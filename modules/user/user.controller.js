@@ -6,7 +6,6 @@ const {
   generateToken,
   sendVerificationEmail,
   sendVerificationCode,
-  sendSubscriptionSuccssMessage,
 } = require("../../utils/auth");
 
 const registerUser = async (req, res) => {
@@ -253,7 +252,7 @@ const updateSubscriptionStatus = async (req, res) => {
       );
 
       res.status(200).send({
-        message: "Subscription successfully!",
+        message: "User Password updated successfully!",
         status: 200,
       });
     } else {
@@ -271,19 +270,22 @@ const updateSubscriptionStatus = async (req, res) => {
 const updateUserBuffer = async (req, res) => {
   try {
     const isExist = await User.findOne({ _id: req.params.id });
-    // const newPdfBuffer = Buffer.from(req.body.data);
-    // console.log("NewPdfBuffer: ", newPdfBuffer)
-    console.log("NewPdfBuffer req.body : ", req.body);
-    // console.log("NewPdfBuffer req : ", req.params);
-    console.log("NewPdfBuffer req.file.buffer : ", req.file);
-    console.log("req.params.id :", req.params.id);
+
+    const pdfBuffer = req.file.buffer; // Access the uploaded file buffer
+
+    console.log("pdfBuffer", pdfBuffer);
+
+    // Here you can perform any additional processing or save the file as needed
+
+    // Send a response back to the client
+    res.status(200).json({ message: "File uploaded successfully" });
 
     if (isExist) {
       const result = await User.updateOne(
         { _id: req.params.id },
         {
           $set: {
-            pdfBuffer: req.body,
+            pdfBuffer: req.body.data,
           },
         }
       );
@@ -304,21 +306,6 @@ const updateUserBuffer = async (req, res) => {
   }
 };
 
-const sendSubscriptionMessage = async (req, res) => {
-  try {
-    const { email } = req.body;
-
-    const result = await sendSubscriptionSuccssMessage(email);
-    res.status(200).send({
-      message: "Message send successfully",
-    });
-  } catch (error) {
-    res.status(500).send({
-      message: error.message,
-    });
-  }
-};
-
 module.exports = {
   registerUser,
   loginUser,
@@ -331,5 +318,4 @@ module.exports = {
   sendOTPToEmail,
   updateSubscriptionStatus,
   updateUserBuffer,
-  sendSubscriptionMessage,
 };
