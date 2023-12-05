@@ -74,6 +74,7 @@ app.put('/upload/:id', upload.single('file'), async (req, res) => {
 
     res.status(200).send({
       message: "User PDF updated successfully!",
+      user: isExist,
       status: 200,
     });
   }
