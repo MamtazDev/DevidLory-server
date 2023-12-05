@@ -14,6 +14,7 @@ const {
   sendOTPToEmail,
   updateSubscriptionStatus,
   updateUserBuffer,
+  subscriptionSuccssMessage,
 } = require("./user.controller");
 
 const router = express.Router();
@@ -24,6 +25,7 @@ const upload = multer({ storage: storage });
 router.post("/signup", registerUser);
 router.post("/login", loginUser);
 router.get("/", getAllUsers);
+router.post("/sendSubscriptionMessage", subscriptionSuccssMessage);
 router.get("/sendOtp/:email", sendOTPToEmail);
 router.delete("/delete/:id", deleteUser);
 router.put("/changeEmail/:id", changeUserEmail);

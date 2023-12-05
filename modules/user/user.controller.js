@@ -6,6 +6,7 @@ const {
   generateToken,
   sendVerificationEmail,
   sendVerificationCode,
+  sendSubscriptionSuccssMessage,
 } = require("../../utils/auth");
 
 const registerUser = async (req, res) => {
@@ -306,6 +307,20 @@ const updateUserBuffer = async (req, res) => {
   }
 };
 
+const subscriptionSuccssMessage = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const message = await sendSubscriptionSuccssMessage(email);
+    res.status(200).send({
+      message: "Subscription message send successfully!",
+    });
+  } catch (error) {
+    res.status(500).send({
+      message: error.message,
+    });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
@@ -318,4 +333,5 @@ module.exports = {
   sendOTPToEmail,
   updateSubscriptionStatus,
   updateUserBuffer,
+  subscriptionSuccssMessage,
 };
