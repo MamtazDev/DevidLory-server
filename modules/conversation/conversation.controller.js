@@ -60,52 +60,48 @@ const getConversationOfTwoUsers = async (req, res) => {
       members: { $all: [firstUserId, admin?._id.toString()] },
     });
 
-   
-    if(conversation?._id)
-    {
+    if (conversation?._id) {
       res.status(200).send(conversation);
-    }
-    else{
+    } else {
       res.status(200).send({
-        message: "No conversation"
-      })
+        message: "No conversation",
+      });
     }
   } catch (error) {
     res.status(500).send(error);
   }
 };
 
-const sendMailToAuthor = async(req,res)=>{
+const sendMailToAuthor = async (req, res) => {
   try {
-    const {email, contactInfo,message }=req.body;
+    const { email, contactInfo, message } = req.body;
 
     const data = {
       email,
       name: contactInfo?.name,
       phoneNumber: contactInfo?.phoneNumber,
       country: contactInfo?.country,
-      message
-    }
-    
-    const sendMail = await sendEmail(data)
+      message,
+    };
 
-    if(sendEmail){
-      console.log("mail sent")
+    const sendMail = await sendEmail(data);
+
+    if (sendEmail) {
+      // console.log("mail sent")
     }
 
     res.status(200).send({
       message: "Send mail to author successfully!",
-      status:200
-    })
-    
+      status: 200,
+    });
   } catch (error) {
     res.status(500).send(error);
   }
-}
+};
 
 module.exports = {
   addConversationBySenderReciver,
   getConversationByUser,
   getConversationOfTwoUsers,
-  sendMailToAuthor
+  sendMailToAuthor,
 };
