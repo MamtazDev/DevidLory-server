@@ -12,6 +12,7 @@ const notesRoutes = require("./modules/notes/notes.route");
 const conversationRoutes = require("./modules/conversation/conversation.route");
 const messagesRoutes = require("./modules/messages/message.route");
 const subscriptionRoutes = require("./modules/subscription/subscription.route");
+const couponRoutes = require("./modules/coupon/coupon.route");
 
 // stripe details
 
@@ -31,6 +32,7 @@ app.use("/api/notes", notesRoutes);
 app.use("/api/conversations", conversationRoutes);
 app.use("/api/messages", messagesRoutes);
 app.use("/api/notifications", notificationRoutes);
+app.use("/api/coupon", couponRoutes);
 
 // subscription
 app.use("/api/subscription", subscriptionRoutes);

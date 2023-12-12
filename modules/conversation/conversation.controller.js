@@ -75,6 +75,7 @@ const getConversationOfTwoUsers = async (req, res) => {
 const sendMailToAuthor = async (req, res) => {
   try {
     const { email, contactInfo, message } = req.body;
+    const admin = await User.findOne({ role: "admin" });
 
     const data = {
       email,
@@ -82,6 +83,7 @@ const sendMailToAuthor = async (req, res) => {
       phoneNumber: contactInfo?.phoneNumber,
       country: contactInfo?.country,
       message,
+      admin: admin?.email,
     };
 
     const sendMail = await sendEmail(data);

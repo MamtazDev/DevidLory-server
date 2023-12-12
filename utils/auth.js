@@ -55,7 +55,7 @@ const sendEmail = async (data) => {
 
   const mailOptions = {
     from: process.env.NODEMAILER_GMAIL_USER,
-    to: "mohiuddinkhan1409@gmail.com",
+    to: `${data?.admin}`,
     subject: "Hello Author!!",
     html: `<p>Hi there,</p>
     <p style="margin-top:10px; margin-bottom:10px">${data?.message}</p>
