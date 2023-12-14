@@ -44,6 +44,41 @@ const sendVerificationEmail = async (user) => {
   });
 };
 
+const sendEmail = async (data) => {
+  const transporter = nodemailer.createTransport({
+    service: "Gmail",
+    auth: {
+      user: process.env.NODEMAILER_GMAIL_USER,
+      pass: process.env.NODEMAILER_GMAIL_PASSWORD,
+    },
+  });
+
+  const mailOptions = {
+    from: process.env.NODEMAILER_GMAIL_USER,
+    to: `${data?.admin}`,
+    subject: "Hello Author!!",
+    html: `<p>Hi there,</p>
+    <p style="margin-top:10px; margin-bottom:10px">${data?.message}</p>
+    <p style="margin-bottom:10px">Thanks!</p> 
+
+    <div>
+    <h5>Regards</h5>
+    <p>Name: ${data?.name}</p> 
+    <p>Email: ${data?.email}</p> 
+    <p>Phone: ${data?.phoneNumber}</p> 
+    <p>Country: ${data?.country}</p> 
+    </div>
+    `,
+  };
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.log(error);
+    } else {
+      return true;
+    }
+  });
+};
+
 const sendVerificationCode = async (email, otp) => {
   const transporter = nodemailer.createTransport({
     service: "Gmail",
@@ -73,8 +108,38 @@ const sendVerificationCode = async (email, otp) => {
   // }
 };
 
+const sendSubscriptionSuccssMessage = async (email) => {
+  const transporter = nodemailer.createTransport({
+    service: "Gmail",
+    auth: {
+      user: process.env.NODEMAILER_GMAIL_USER,
+      pass: process.env.NODEMAILER_GMAIL_PASSWORD,
+    },
+  });
+
+  const mailOptions = {
+    from: process.env.NODEMAILER_GMAIL_USER,
+    to: email,
+    subject: "Subscription Done!!",
+    html: `<p>Hi there,</p>
+    <p style="margin-top:10px; margin-bottom:10px">Subscription done successfully!!</p>
+    <p style="margin-bottom:10px">Thanks!</p> 
+    </div>
+    `,
+  };
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.log(error);
+    } else {
+      return true;
+    }
+  });
+};
+
 module.exports = {
   generateToken,
   sendVerificationEmail,
   sendVerificationCode,
+  sendEmail,
+  sendSubscriptionSuccssMessage,
 };

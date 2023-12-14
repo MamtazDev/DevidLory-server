@@ -1,10 +1,12 @@
 const User = require("./user.model");
 const bcrcypt = require("bcryptjs");
 const randomstring = require("randomstring");
+
 const {
   generateToken,
   sendVerificationEmail,
   sendVerificationCode,
+  sendSubscriptionSuccssMessage,
 } = require("../../utils/auth");
 
 const registerUser = async (req, res) => {
@@ -75,7 +77,10 @@ const editUser = async (req, res) => {
     const user = await User.findById(req.params.id);
 
     if (user) {
-      // user.image = image;
+      if (image) {
+        user.image = image;
+      }
+
       user.fullName = fullName;
       user.phoneNumber = phoneNumber;
       user.country = country;
@@ -233,6 +238,89 @@ const sendOTPToEmail = async (req, res) => {
   }
 };
 
+const updateSubscriptionStatus = async (req, res) => {
+  try {
+    const isExist = await User.findOne({ _id: req.params.id });
+
+    if (isExist) {
+      const result = await User.updateOne(
+        { _id: req.params.id },
+        {
+          $set: {
+            isSubscribed: true,
+          },
+        }
+      );
+
+      res.status(200).send({
+        message: "User Password updated successfully!",
+        status: 200,
+      });
+    } else {
+      res.status(400).send({
+        message: "User not exist!",
+      });
+    }
+  } catch (error) {
+    res.status(500).send({
+      message: error.message,
+    });
+  }
+};
+
+const updateUserBuffer = async (req, res) => {
+  try {
+    const isExist = await User.findOne({ _id: req.params.id });
+
+    const pdfBuffer = req.file.buffer; // Access the uploaded file buffer
+
+    console.log("pdfBuffer", pdfBuffer);
+
+    // Here you can perform any additional processing or save the file as needed
+
+    // Send a response back to the client
+    res.status(200).json({ message: "File uploaded successfully" });
+
+    if (isExist) {
+      const result = await User.updateOne(
+        { _id: req.params.id },
+        {
+          $set: {
+            pdfBuffer: req.body.data,
+          },
+        }
+      );
+
+      res.status(200).send({
+        message: "User PDF updated successfully!",
+        status: 200,
+      });
+    } else {
+      res.status(400).send({
+        message: "User not exist!",
+      });
+    }
+  } catch (error) {
+    res.status(500).send({
+      message: error.message,
+    });
+  }
+};
+
+const subscriptionSuccssMessage = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const message = await sendSubscriptionSuccssMessage(email);
+    res.status(200).send({
+      message: "Subscription message send successfully!",
+    });
+  } catch (error) {
+    res.status(500).send({
+      message: error.message,
+    });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
@@ -243,4 +331,7 @@ module.exports = {
   changeUserEmail,
   changeUserPassword,
   sendOTPToEmail,
+  updateSubscriptionStatus,
+  updateUserBuffer,
+  subscriptionSuccssMessage,
 };
