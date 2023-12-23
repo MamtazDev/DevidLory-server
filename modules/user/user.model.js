@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: false,
       enum: ["user", "admin"],
-      default:"user"
+      default: "user",
     },
     image: {
       type: String,
@@ -43,10 +43,16 @@ const userSchema = new mongoose.Schema(
       default: false,
       required: false,
     },
-    pdfBuffer:{
+    pdfBuffer: {
       type: Object,
-      required:false,
-    }
+      required: false,
+    },
+    purchased_books: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Book",
+      },
+    ],
   },
   {
     timestamps: true,
@@ -56,4 +62,3 @@ const userSchema = new mongoose.Schema(
 const User = mongoose.model("User", userSchema);
 
 module.exports = User;
-

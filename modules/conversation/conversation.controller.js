@@ -88,10 +88,6 @@ const sendMailToAuthor = async (req, res) => {
 
     const sendMail = await sendEmail(data);
 
-    if (sendEmail) {
-      // console.log("mail sent")
-    }
-
     res.status(200).send({
       message: "Send mail to author successfully!",
       status: 200,
