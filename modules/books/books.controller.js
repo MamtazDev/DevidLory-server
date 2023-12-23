@@ -52,7 +52,7 @@ const getFiles = async (req, res) => {
 const getFilesByID = async (req, res) => {
   try {
     Book.find({ _id: req.params.id })
-      .populate("audios")
+      .populate({ path: "audios", options: { sort: { pageIndex: 1 } } })
       .then((data) => {
         return res.send({ status: "ok", data: data });
       });

@@ -29,9 +29,12 @@ const Save = async (req, res) => {
 
 const getFiles = async (req, res) => {
   try {
-    Audio.find({}).then((data) => {
-      return res.status(200).send({ status: "ok", data: data });
-    });
+    Audio.find({})
+      .sort({ pageIndex: 1 })
+      .then((data) => {
+        console.log("data", data);
+        return res.status(200).send({ status: "ok", data: data });
+      });
   } catch (error) {
     console.log(error);
   }
