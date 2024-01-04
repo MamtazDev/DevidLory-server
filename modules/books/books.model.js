@@ -13,6 +13,10 @@ const bookSchema = new mongoose.Schema(
       default: 9.99,
     },
     title: String,
+    description: {
+      type: String,
+      required: true,
+    },
     audios: [
       {
         type: mongoose.Schema.Types.ObjectId,

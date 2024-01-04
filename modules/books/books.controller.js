@@ -8,11 +8,62 @@ const SavePdf = async (req, res) => {
   // console.log(req.files);
   const title = req.body.title;
   const price = req.body.price;
+  const description = req.body.description;
   const fileName = req.files["file"][0].filename;
   const coverPic = req.files["coverPic"][0].filename;
   try {
-    await Book.create({ title: title, pdf: fileName, price, coverPic });
+    await Book.create({
+      title: title,
+      pdf: fileName,
+      price,
+      coverPic,
+      description,
+    });
     return res.send({ status: "ok" });
+  } catch (error) {
+    res.status(200).json({ status: error });
+  }
+};
+const editPdf = async (req, res) => {
+  try {
+    const isExist = await Book.findOne({ _id: req.params.id });
+
+    if (isExist) {
+      const { ...info } = req.body;
+      let editInfo = {
+        ...info,
+      };
+
+      if (req.files["file"][0].fileName) {
+        editInfo.pdf = req.files["file"][0].fileName;
+      }
+      if (req.files["coverPic"][0].filename) {
+        editInfo.coverPic = req.files["coverPic"][0].filename;
+      }
+
+      // await Book.create({
+      //   title: title,
+      //   pdf: fileName,
+      //   price,
+      //   coverPic,
+      //   description,
+      // });
+
+      const result = await Book.findByIdAndUpdate(
+        { _id: req.params.id },
+        editInfo,
+        {
+          new: true,
+        }
+      );
+
+      return res.send({ status: "ok" });
+    } else {
+      res.status(201).json({
+        success: false,
+        message: "Book not found",
+      });
+    }
   } catch (error) {
     res.status(200).json({ status: error });
   }
@@ -151,4 +202,5 @@ module.exports = {
   getFilesByID,
   PurchaseBook,
   sendMailToAuthorForBookHardCopy,
+  editPdf,
 };
