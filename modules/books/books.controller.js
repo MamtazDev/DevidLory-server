@@ -9,8 +9,8 @@ const SavePdf = async (req, res) => {
   const title = req.body.title;
   const price = req.body.price;
   const description = req.body.description;
-  const fileName = req.files["file"][0].filename;
-  const coverPic = req.files["coverPic"][0].filename;
+  const fileName = req?.files["file"][0]?.filename;
+  const coverPic = req?.files["coverPic"][0]?.filename;
   try {
     await Book.create({
       title: title,
@@ -30,14 +30,15 @@ const editPdf = async (req, res) => {
 
     if (isExist) {
       const { ...info } = req.body;
+      console.log(info, "info");
       let editInfo = {
         ...info,
       };
 
-      if (req.files["file"][0].fileName) {
-        editInfo.pdf = req.files["file"][0].fileName;
+      if (req?.files["file"][0]?.filename) {
+        editInfo.pdf = req?.files["file"][0]?.filename;
       }
-      if (req.files["coverPic"][0].filename) {
+      if (req?.files["coverPic"][0]?.filename) {
         editInfo.coverPic = req.files["coverPic"][0].filename;
       }
 
@@ -56,7 +57,7 @@ const editPdf = async (req, res) => {
           new: true,
         }
       );
-
+      console.log(editInfo, "editInfo");
       return res.send({ status: "ok" });
     } else {
       res.status(201).json({
