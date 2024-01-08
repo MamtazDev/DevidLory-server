@@ -24,31 +24,25 @@ const SavePdf = async (req, res) => {
     res.status(200).json({ status: error });
   }
 };
+
 const editPdf = async (req, res) => {
   try {
     const isExist = await Book.findOne({ _id: req.params.id });
 
     if (isExist) {
       const { ...info } = req.body;
-      console.log(info, "info");
+
       let editInfo = {
         ...info,
       };
 
-      if (req?.files["file"][0]?.filename) {
-        editInfo.pdf = req?.files["file"][0]?.filename;
-      }
-      if (req?.files["coverPic"][0]?.filename) {
-        editInfo.coverPic = req.files["coverPic"][0].filename;
+      if (req.files && req.files.file && req.files.file[0]?.filename) {
+        editInfo.pdf = req.files.file[0].filename;
       }
 
-      // await Book.create({
-      //   title: title,
-      //   pdf: fileName,
-      //   price,
-      //   coverPic,
-      //   description,
-      // });
+      if (req.files && req.files.coverPic && req.files.coverPic[0]?.filename) {
+        editInfo.coverPic = req.files.coverPic[0].filename;
+      }
 
       const result = await Book.findByIdAndUpdate(
         { _id: req.params.id },
@@ -57,7 +51,7 @@ const editPdf = async (req, res) => {
           new: true,
         }
       );
-      console.log(editInfo, "editInfo");
+
       return res.send({ status: "ok" });
     } else {
       res.status(201).json({
@@ -66,7 +60,7 @@ const editPdf = async (req, res) => {
       });
     }
   } catch (error) {
-    res.status(200).json({ status: error });
+    res.status(500).json({ status: "error", message: error.message });
   }
 };
 const PurchaseBook = async (req, res) => {
