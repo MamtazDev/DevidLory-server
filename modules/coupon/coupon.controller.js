@@ -2,12 +2,8 @@ const Coupon = require("./coupon.model");
 
 const addCoupon = async (req, res) => {
   try {
-    const { code, discount, status } = req.body;
-    const coupon = new Coupon({
-      code,
-      discount,
-      status,
-    });
+    const { ...info } = req.body;
+    const coupon = new Coupon(info);
 
     const addCoupon = await coupon.save();
 
@@ -17,9 +13,9 @@ const addCoupon = async (req, res) => {
   }
 };
 
-const getCoupon = async (req, res) => {
+const getCoupons = async (req, res) => {
   try {
-    const isExist = await Coupon.find({});
+    const isExist = await Coupon.find({}).populate("book");
 
     if (isExist?.length > 0) {
       res.status(200).send({
@@ -65,8 +61,32 @@ const updateCoupon = async (req, res) => {
   }
 };
 
+const deleteCoupon = async (req, res) => {
+  try {
+    const result = await Coupon.deleteOne({ _id: req.params.id });
+    res.status(200).json({
+      status: 200,
+      message: "Coupon Delete Successful!",
+      data: result,
+    });
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
+
+const getBookCouponInfo = async (req, res) => {
+  try {
+    const coupon = await Coupon.find({ book: req.params.id });
+    res.status(200).send(coupon);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
+
 module.exports = {
   addCoupon,
-  getCoupon,
+  getCoupons,
   updateCoupon,
+  deleteCoupon,
+  getBookCouponInfo,
 };

@@ -15,6 +15,11 @@ const couponSchema = new mongoose.Schema(
       required: false,
       default: false,
     },
+    book: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Book",
+      required: true,
+    },
   },
   { timestamps: true }
 );
