@@ -7,6 +7,8 @@ const {
   PurchaseBook,
   sendMailToAuthorForBookHardCopy,
   editPdf,
+  getBookInfoById,
+  getUserRequest,
 } = require("./books.controller");
 
 const router = express.Router();
@@ -36,9 +38,12 @@ router.post(
 // router.post("/upload-files", upload.single("file"), SavePdf);
 router.get("/get-files", getFiles);
 router.get("/getFilesById/:id", getFilesByID);
+router.get("/getUserRequest/:id", getUserRequest);
+
 router.post("/purchase-book", PurchaseBook);
 router.delete("/fileDelete/:id", DeleteFiles);
 router.post("/asksHardCopy", sendMailToAuthorForBookHardCopy);
++router.get("/getBookInfo/:id", getBookInfoById);
 router.patch(
   "/editBook/:id",
   upload.fields([

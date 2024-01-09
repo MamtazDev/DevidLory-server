@@ -3,6 +3,7 @@ const Book = require("./books.model");
 const User = require("../user/user.model");
 const Audio = require("../audios/audio.model");
 const fs = require("fs");
+const Request = require("./request.model");
 
 const SavePdf = async (req, res) => {
   // console.log(req.files);
@@ -163,7 +164,7 @@ const DeleteFiles = async (req, res) => {
 
 const sendMailToAuthorForBookHardCopy = async (req, res) => {
   try {
-    const { book_id, user_id } = req.body;
+    const { book_id, user_id, paymentId } = req.body;
     const admin = await User.findOne({ role: "admin" });
     const user = await User.find({ _id: user_id });
     const book = await Book.find({ _id: book_id });
@@ -179,6 +180,12 @@ const sendMailToAuthorForBookHardCopy = async (req, res) => {
       admin: admin?.email,
     };
 
+    const newRequest = new Request({
+      user: user_id,
+      book: book_id,
+      paymentId: paymentId,
+    });
+    const gg = await newRequest.save();
     await sendEmail(data);
 
     res.status(200).send({
@@ -190,6 +197,30 @@ const sendMailToAuthorForBookHardCopy = async (req, res) => {
   }
 };
 
+const getBookInfoById = async (req, res) => {
+  try {
+    const book = await Book.findById(req.params.id);
+    res.send(book);
+  } catch (err) {
+    res.status(500).send({
+      message: err.message,
+    });
+  }
+};
+
+const getUserRequest = async (req, res) => {
+  try {
+    const userRequests = await Request.find({ user: req.params.id }).populate(
+      "book"
+    );
+    res.send(userRequests);
+  } catch (err) {
+    res.status(500).send({
+      message: err.message,
+    });
+  }
+};
+
 module.exports = {
   SavePdf,
   getFiles,
@@ -198,4 +229,6 @@ module.exports = {
   PurchaseBook,
   sendMailToAuthorForBookHardCopy,
   editPdf,
+  getBookInfoById,
+  getUserRequest,
 };

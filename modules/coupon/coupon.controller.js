@@ -35,18 +35,17 @@ const getCoupons = async (req, res) => {
 
 const updateCoupon = async (req, res) => {
   try {
-    const { code, discount, status, couponId } = req.body;
+    const { couponId, ...info } = req.body;
 
     const coupon = await Coupon.findById(couponId);
 
     if (coupon) {
-      coupon.code = code;
-      coupon.discount = discount;
-      coupon.status = status;
+      const result = await Coupon.findByIdAndUpdate({ _id: couponId }, info, {
+        new: true,
+      });
 
-      await coupon.save();
       res.status(200).send({
-        data: coupon,
+        data: result,
         message: "Coupon updated successfully",
         status: 200,
       });
@@ -75,8 +74,10 @@ const deleteCoupon = async (req, res) => {
 };
 
 const getBookCouponInfo = async (req, res) => {
+  console.log(req.params, "apasse");
   try {
-    const coupon = await Coupon.find({ book: req.params.id });
+    const coupon = await Coupon.findOne({ book: req.params.id });
+    console.log(coupon, "dfdfd");
     res.status(200).send(coupon);
   } catch (error) {
     res.status(500).send(error);
