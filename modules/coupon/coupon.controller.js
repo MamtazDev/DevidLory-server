@@ -74,10 +74,10 @@ const deleteCoupon = async (req, res) => {
 };
 
 const getBookCouponInfo = async (req, res) => {
-  console.log(req.params, "apasse");
+  // console.log(req.params, "apasse");
   try {
     const coupon = await Coupon.findOne({ book: req.params.id });
-    console.log(coupon, "dfdfd");
+    // console.log(coupon, "dfdfd");
     res.status(200).send(coupon);
   } catch (error) {
     res.status(500).send(error);

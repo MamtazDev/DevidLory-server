@@ -112,7 +112,7 @@ app.put("/upload/:id", upload.single("file"), async (req, res) => {
   console.log("req", req.file);
   const pdfBuffer = req.file.buffer; // Access the uploaded file buffer
 
-  console.log("pdfBuffer", pdfBuffer);
+  // console.log("pdfBuffer", pdfBuffer);
   const isExist = await User.findOne({ _id: req.params.id }).select(
     "-password"
   );
