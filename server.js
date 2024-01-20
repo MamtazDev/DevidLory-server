@@ -23,6 +23,7 @@ const audioRoutes = require("./modules/audios/audio.route");
 
 const notificationRoutes = require("./modules/notifications/notifications.route");
 const User = require("./modules/user/user.model");
+const PDFbuffer = require("./modules/pdfBuffer/pdfBuffer.model");
 
 const { AudiofilePath, allAudios } = require("./utils/get-file-path");
 
@@ -109,66 +110,68 @@ const upload = multer({
 // });
 
 app.put("/upload/:id", upload.single("file"), async (req, res) => {
-  console.log("req", req.file);
   const pdfBuffer = req.file.buffer; // Access the uploaded file buffer
-
-  // console.log("pdfBuffer", pdfBuffer);
-  const isExist = await User.findOne({ _id: req.params.id }).select(
-    "-password"
-  );
-
-  // console.log("isExist:", isExist);
-
-  if (isExist) {
-    const result = await User.updateOne(
-      { _id: req.params.id },
-      {
-        $set: {
-          pdfBuffer: pdfBuffer,
-        },
-      }
-    );
-
-    res.status(200).send({
-      message: "User PDF updated successfully!",
-      user: isExist,
-      status: 200,
+  const { bookId } = req.query;
+  const { id } = req.params; //userId
+  try {
+    const existingBook = await PDFbuffer.findOne({
+      user_id: id,
+      book_id: bookId,
     });
-  } else {
-    res.status(400).send({
-      message: "User not exist!",
+
+    if (existingBook) {
+      await PDFbuffer.updateOne(
+        { user_id: id, book_id: bookId },
+        { $set: { pdfBuffer: pdfBuffer } }
+      );
+
+      res.status(200).send({
+        message: "User PDF updated successfully!",
+        status: 200,
+      });
+    } else {
+      const newPDFBuffer = new PDFbuffer({
+        user_id: id,
+        book_id: bookId,
+        pdfBuffer: pdfBuffer,
+      });
+
+      await newPDFBuffer.save();
+
+      res.status(200).send({
+        message: "PDF Buffer created and saved successfully",
+        status: 200,
+      });
+    }
+  } catch (error) {
+    console.error("Error updating PDF Buffer:", error);
+    res.status(500).send({
+      message: "Failed to update PDF Buffer",
+      status: 500,
+      error: error.message,
     });
   }
-
-  // Here you can perform any additional processing or save the file as needed
-
-  // Send a response back to the client
-  // res.status(200).json({ message: 'File uploaded successfully' });
 });
+// Get book
+app.get("/getbook-buffer", async (req, res) => {
+  const { user_id, bookId } = req.query;
 
-// app.post("/upload", upload.single("file"), (req, res) => {
-//   const pdfBuffer = req.file.buffer; // Access the uploaded file buffer
-
-//   console.log("pdfBuffer", pdfBuffer);
-
-//   // Here you can perform any additional processing or save the file as needed
-
-//   // Send a response back to the client
-//   res.status(200).json({ message: "File uploaded successfully" });
-// });
-
-// 1. conversation
-// 2. new update api pdf buffer add
-// 3. call buffer api
-
-// const response = await fetch(
-//   "https://your-server-endpoint.com/save-pdf",
-//   {
-//     method: "PUT",
-//     headers: {
-//       "Content-Type": "application/pdf",
-//     },
-//     // body: pdfBuffer ? pdfBuffer: pdfData ,
-//     body: pdfData ,
-//   }
-// );
+  try {
+    const existingBook = await PDFbuffer.findOne({
+      user_id: user_id,
+      book_id: bookId,
+    });
+    res.status(200).send({
+      message: "Got the book!",
+      data: existingBook,
+      status: 200,
+    });
+  } catch (error) {
+    console.error("Error fetching PDF Buffer:", error);
+    res.status(500).send({
+      message: "Failed to fetch PDF Buffer",
+      status: 500,
+      error: error.message,
+    });
+  }
+});

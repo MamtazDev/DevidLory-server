@@ -43,10 +43,6 @@ const userSchema = new mongoose.Schema(
       default: false,
       required: false,
     },
-    pdfBuffer: {
-      type: Object,
-      required: false,
-    },
     purchased_books: [
       {
         type: mongoose.Schema.Types.ObjectId,
