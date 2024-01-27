@@ -25,10 +25,10 @@ const notificationRoutes = require("./modules/notifications/notifications.route"
 const User = require("./modules/user/user.model");
 const PDFbuffer = require("./modules/pdfBuffer/pdfBuffer.model");
 
-const { AudiofilePath, allAudios } = require("./utils/get-file-path");
-
 const app = express();
 app.use(cors());
+
+
 app.use(express.json());
 
 connectDB();
