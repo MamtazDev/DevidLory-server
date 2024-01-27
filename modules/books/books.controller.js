@@ -4,14 +4,41 @@ const User = require("../user/user.model");
 const Audio = require("../audios/audio.model");
 const fs = require("fs");
 const Request = require("./request.model");
+const { S3Client, DeleteObjectCommand } = require("@aws-sdk/client-s3");
+
+const s3 = new S3Client({
+  credentials: {
+    secretAccessKey: process.env.AWS_SECRET_KEY,
+    accessKeyId: process.env.AWS_ACCESS_KEY,
+    region: process.env.AWS_REGION,
+  },
+});
+
+async function deleteFileFromS3(key) {
+  try {
+    const deleteParams = {
+      Bucket: process.env.AWS_S3_BUCKETNAME, // Replace with your bucket name
+      Key: key,
+    };
+
+    const command = new DeleteObjectCommand(deleteParams);
+    const response = await s3.send(command);
+
+    console.log("Successfully deleted file from bucket", key);
+    return response;
+  } catch (err) {
+    console.error("Error", err);
+  }
+}
 
 const SavePdf = async (req, res) => {
-  // console.log(req.files);
+  // console.log("files", req.files.coverPic[0]);
   const title = req.body.title;
   const price = req.body.price;
   const description = req.body.description;
-  const fileName = req?.files["file"][0]?.filename;
-  const coverPic = req?.files["coverPic"][0]?.filename;
+  const fileName = req?.files.file[0].key;
+  const coverPic = req?.files.coverPic[0].key;
+
   try {
     await Book.create({
       title: title,
@@ -28,7 +55,7 @@ const SavePdf = async (req, res) => {
 
 const editPdf = async (req, res) => {
   try {
-    const isExist = await Book.findOne({ _id: req.params.id });
+    const isExist = await Book.findById(req.params.id);
 
     if (isExist) {
       const { ...info } = req.body;
@@ -37,12 +64,14 @@ const editPdf = async (req, res) => {
         ...info,
       };
 
-      if (req.files && req.files.file && req.files.file[0]?.filename) {
-        editInfo.pdf = req.files.file[0].filename;
+      if (req.files && req.files.file && req?.files.file[0].key) {
+        await deleteFileFromS3(isExist.pdf);
+        editInfo.pdf = req?.files.file[0].key;
       }
 
-      if (req.files && req.files.coverPic && req.files.coverPic[0]?.filename) {
-        editInfo.coverPic = req.files.coverPic[0].filename;
+      if (req.files && req.files.coverPic && req?.files.coverPic[0].key) {
+        await deleteFileFromS3(isExist.coverPic);
+        editInfo.coverPic = req?.files.coverPic[0].key;
       }
 
       const result = await Book.findByIdAndUpdate(
@@ -135,23 +164,12 @@ const DeleteFiles = async (req, res) => {
     const book = await Book.findById(req.params.id);
 
     if (book) {
-      const FilePathCover = `${process.cwd()}/files/${book.coverPic}`;
-      fs.unlink(FilePathCover, (err) => {
-        if (err) {
-          console.error(`Error deleting file: ${err}`);
-          return;
-        }
-        console.log(`File ${filePath} has been deleted.`);
-      });
-
-      const filePath = `${process.cwd()}/files/${book.pdf}`;
-      fs.unlink(filePath, (err) => {
-        if (err) {
-          console.error(`Error deleting file: ${err}`);
-          return;
-        }
-        console.log(`File ${filePath} has been deleted.`);
-      });
+      try {
+        await deleteFileFromS3(book.coverPic);
+        await deleteFileFromS3(book.pdf);
+      } catch (error) {
+        console.error("e", error);
+      }
     }
 
     await Book.deleteOne({ _id: id });
